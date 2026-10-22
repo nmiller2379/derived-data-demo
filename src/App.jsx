@@ -9,46 +9,50 @@ const initialStudents = [
 
 export default function App() {
   const [students, setStudents] = useState(initialStudents);
-
-  const [studentCount, setStudentCount] = useState(3);
-  const [averageScore, setAverageScore] = useState(83.67);
-  const [passingCount, setPassingCount] = useState(3);
-
   const [showPassingOnly, setShowPassingOnly] = useState(false);
-  const [visibleStudents, setVisibleStudents] = useState(initialStudents);
+
+  const studentCount = students.length;
+  const averageScore =
+    students.length > 0
+      ? students.reduce((sum, student) => sum + student.score, 0) /
+        students.length
+      : 0;
+  const passingCount = students.filter((student) => student.score >= 70).length;
+
+  const visibleStudents = showPassingOnly
+    ? students.filter((student) => student.score >= 70)
+    : students;
 
   const [newName, setNewName] = useState("");
   const [newScore, setNewScore] = useState("");
 
-  function updateStatistics(updatedStudents) {
-    setStudentCount(updatedStudents.length);
+  // function updateStatistics(updatedStudents) {
+  //   const total = updatedStudents.reduce(
+  //     (sum, student) => sum + student.score,
+  //     0,
+  //   );
 
-    const total = updatedStudents.reduce(
-      (sum, student) => sum + student.score,
-      0,
-    );
+  //   const average =
+  //     updatedStudents.length > 0 ? total / updatedStudents.length : 0;
 
-    const average =
-      updatedStudents.length > 0 ? total / updatedStudents.length : 0;
+  //   setAverageScore(average);
 
-    setAverageScore(average);
+  //   const passing = updatedStudents.filter(
+  //     (student) => student.score >= 70,
+  //   ).length;
 
-    const passing = updatedStudents.filter(
-      (student) => student.score >= 70,
-    ).length;
+  //   setPassingCount(passing);
+  // }
 
-    setPassingCount(passing);
-  }
-
-  function updateVisibleStudents(updatedStudents, passingOnly) {
-    if (passingOnly) {
-      setVisibleStudents(
-        updatedStudents.filter((student) => student.score >= 70),
-      );
-    } else {
-      setVisibleStudents(updatedStudents);
-    }
-  }
+  // function updateVisibleStudents(updatedStudents, passingOnly) {
+  //   if (passingOnly) {
+  //     setVisibleStudents(
+  //       updatedStudents.filter((student) => student.score >= 70),
+  //     );
+  //   } else {
+  //     setVisibleStudents(updatedStudents);
+  //   }
+  // }
 
   function changeScore(id, amount) {
     const updatedStudents = students.map((student) =>
@@ -61,7 +65,7 @@ export default function App() {
     );
 
     setStudents(updatedStudents);
-    updateStatistics(updatedStudents);
+    // updateStatistics(updatedStudents);
     updateVisibleStudents(updatedStudents, showPassingOnly);
   }
 
@@ -89,8 +93,8 @@ export default function App() {
     const updatedStudents = [...students, newStudent];
 
     setStudents(updatedStudents);
-    updateStatistics(updatedStudents);
-    updateVisibleStudents(updatedStudents, showPassingOnly);
+    // updateStatistics(updatedStudents);
+    // updateVisibleStudents(updatedStudents, showPassingOnly);
 
     setNewName("");
     setNewScore("");
@@ -100,15 +104,15 @@ export default function App() {
     const updatedStudents = students.filter((student) => student.id !== id);
 
     setStudents(updatedStudents);
-    updateStatistics(updatedStudents);
-    updateVisibleStudents(updatedStudents, showPassingOnly);
+    // updateStatistics(updatedStudents);
+    // updateVisibleStudents(updatedStudents, showPassingOnly);
   }
 
   function handleFilterChange(event) {
-    const checked = event.target.checked;
+    const checked = !showPassingOnly;
 
     setShowPassingOnly(checked);
-    updateVisibleStudents(students, checked);
+    // updateVisibleStudents(students, checked);
   }
 
   return (
@@ -133,7 +137,7 @@ export default function App() {
       </section>
 
       <section className="controls">
-        <button onClick={() => setShowPassingOnly(!showPassingOnly)}>
+        <button onClick={handleFilterChange}>
           {showPassingOnly ? "Show All Students" : "Show Passing Only"}
         </button>
       </section>
